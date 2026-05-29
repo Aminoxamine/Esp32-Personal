@@ -1,1 +1,9 @@
-
+[22:31:18] [STATUS] v22  boot#312
+[22:31:18] [STATUS] Uptime: 00h03m04s
+[22:31:18] [STATUS] IP: 192.168.18.192  RSSI: -67 dBm
+[22:31:18] [STATUS] RAM: 162500 bytes libres
+[22:31:18] [STATUS] SPIFFS: 1158616 bytes libres
+[22:31:18] [STATUS] Reloj: NTP OK
+[22:31:18] [STATUS] Fecha: 2026-05-29 22:31:18
+[22:31:18] [STATUS] Token GH: OK (ghp_eaFo...)
+[22:32:14] [OTA] Local v22 → Remoto v22
