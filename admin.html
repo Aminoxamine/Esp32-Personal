@@ -1,1 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESP32 Remote Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #080b10;
+      --surface:  #0e1318;
+      --border:   #1c2330;
+      --border2:  #2a3545;
+      --text:     #cdd9e5;
+      --muted:    #536878;
+      --accent:   #4d9eff;
+      --green:    #3fb950;
+      --red:      #f85149;
+      --yellow:   #e3b341;
+      --cyan:     #79c0ff;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Syne', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--mono);
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
+    /* ── SETUP SCREEN ── */
+    #setupScreen {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse 60% 40% at 70% 30%, rgba(77,158,255,.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(63,185,80,.04) 0%, transparent 70%);
+    }
+    .setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 2.2rem 2rem;
+      width: 380px;
+      max-width: 95vw;
+    }
+    .setup-card h1 {
+      font-family: var(--sans);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: .3rem;
+      color: #fff;
+      letter-spacing: -.02em;
+    }
+    .setup-card .sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 1.8rem;
+    }
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .4rem;
+    }
+    .field input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: .65rem 1rem;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .field input:focus { border-color: var(--accent); }
+    .field .hint {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: .35rem;
+      line-height: 1.5;
+    }
+    .btn-connect {
+      width: 100%;
+      margin-top: .5rem;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: .75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      transition: opacity .2s, transform .1s;
+    }
+    .btn-connect:hover { opacity: .9; }
+    .btn-connect:active { transform: scale(.98); }
+    .setup-err {
+      color: var(--red);
+      font-size: 11px;
+      margin-top: .75rem;
+      min-height: 16px;
+    }
+
+    /* ── MAIN PANEL ── */
+    #mainPanel {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      padding: .6rem;
+      gap: .5rem;
+    }
+
+    /* header */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .5rem 1rem;
+      flex-shrink: 0;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .logo {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .via-badge {
+      font-size: 9px;
+      background: rgba(77,158,255,.12);
+      color: var(--accent);
+      border: 1px solid rgba(77,158,255,.25);
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .info-pills {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 10px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .pill.ok { color: var(--green); border-color: rgba(63,185,80,.3); background: rgba(63,185,80,.06); }
+    .pill.warn { color: var(--yellow); border-color: rgba(227,179,65,.3); background: rgba(227,179,65,.06); }
+    .pill.err { color: var(--red); border-color: rgba(248,81,73,.3); background: rgba(248,81,73,.06); }
+    .topbar-right { display: flex; gap: .4rem; align-items: center; }
+
+    /* status dot */
+    #statusDot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+    #statusDot.polling { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+    #statusDot.error   { background: var(--red); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* buttons */
+    .btn {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: .4rem .85rem;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 11px;
+      transition: background .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--border); }
+    .btn.danger { color: var(--red); }
+    .btn.danger:hover { background: rgba(248,81,73,.1); border-color: rgba(248,81,73,.4); }
+    .btn.warn-btn { color: var(--yellow); }
+    .btn.warn-btn:hover { background: rgba(227,179,65,.1); border-color: rgba(227,179,65,.4); }
+
+    /* terminal */
+    #term {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .8rem 1rem;
+      font-size: 11.5px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-all;
+      scroll-behavior: smooth;
+    }
+    #term::-webkit-scrollbar { width: 4px; }
+    #term::-webkit-scrollbar-track { background: transparent; }
+    #term::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    .li { color: var(--muted); }
+    .le { color: var(--red); }
+    .lo { color: var(--green); }
+    .la { color: var(--cyan); }
+    .lc { color: var(--yellow); }
+    .lm { color: var(--accent); font-style: italic; }
+
+    /* command bar */
+    .cmdbar {
+      display: flex;
+      gap: .4rem;
+      flex-shrink: 0;
+    }
+    #cmdInput {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: .55rem 1rem;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    #cmdInput:focus { border-color: var(--accent); }
+    #cmdInput::placeholder { color: var(--muted); }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 500;
+    }
+    .btn.primary:hover { opacity: .88; background: var(--accent); }
+
+    /* delay notice */
+    .delay-bar {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(227,179,65,.07);
+      border: 1px solid rgba(227,179,65,.2);
+      border-radius: 8px;
+      padding: .4rem 1rem;
+      font-size: 10.5px;
+      color: var(--yellow);
+      flex-shrink: 0;
+    }
+    .delay-bar span { color: var(--muted); }
+
+    /* countdown */
+    #countdown {
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ SETUP SCREEN ══ -->
+<div id="setupScreen">
+  <div class="setup-card">
+    <h1>⚡ ESP32 Remote Admin</h1>
+    <p class="sub">Via GitHub API · Works from anywhere</p>
+
+    <div class="field">
+      <label>GitHub Token</label>
+      <input id="inToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+      <p class="hint">Your Personal Access Token with <code>repo</code> scope</p>
+    </div>
+    <div class="field">
+      <label>GitHub Username</label>
+      <input id="inUser" type="text" placeholder="Aminoxamine" value="Aminoxamine" />
+    </div>
+    <div class="field">
+      <label>Repository Name</label>
+      <input id="inRepo" type="text" placeholder="Esp32-Personal" value="Esp32-Personal" />
+    </div>
+
+    <button class="btn-connect" onclick="startPanel()">Connect via GitHub</button>
+    <div class="setup-err" id="setupErr"></div>
+  </div>
+</div>
+
+<!-- ══ MAIN PANEL ══ -->
+<div id="mainPanel">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="logo">🛰 ESP32 Admin</span>
+      <span class="via-badge">via GitHub</span>
+      <div class="info-pills" id="infoPills">
+        <span class="pill">Conectando...</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div id="statusDot"></div>
+      <span id="countdown"></span>
+      <button class="btn warn-btn" onclick="sendCmd('RESTART')">↺ Reiniciar</button>
+      <button class="btn danger" onclick="goBack()">✕ Salir</button>
+    </div>
+  </div>
+
+  <div class="delay-bar">
+    ⏱ Modo GitHub API
+    <span>· Los logs y comandos tienen ~30 segundos de delay (intervalo de polling del ESP32)</span>
+  </div>
+
+  <div id="term"></div>
+
+  <div class="cmdbar">
+    <input id="cmdInput" type="text"
+      placeholder="STATUS · RESTART · SET_TOKEN ghp_... · SET_ADMIN_USER x · SET_ADMIN_PASS x"
+      onkeydown="if(event.key==='Enter') sendCmd()" />
+    <button class="btn primary" onclick="sendCmd()">▶ Send</button>
+    <button class="btn" onclick="document.getElementById('term').innerHTML=''">✕ Clear</button>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+let GH_TOKEN = '', GH_USER = '', GH_REPO = '';
+let pollTimer = null, countdownTimer = null, pollInterval = 30;
+let countdown = pollInterval;
+let autoScroll = true;
+let lastLogContent = '';
+let pendingSha = '';
+
+const API = () => `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
+
+// ── SETUP ──
+function startPanel() {
+  GH_TOKEN = document.getElementById('inToken').value.trim();
+  GH_USER  = document.getElementById('inUser').value.trim();
+  GH_REPO  = document.getElementById('inRepo').value.trim();
+  if (!GH_TOKEN || !GH_USER || !GH_REPO) {
+    document.getElementById('setupErr').textContent = '⚠ Fill in all fields.';
+    return;
+  }
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('mainPanel').style.display = 'flex';
+  appLog('system', `Connected via GitHub API · ${GH_USER}/${GH_REPO}`);
+  appLog('system', 'Fetching initial logs...');
+  fetchAll();
+  startCountdown();
+  pollTimer = setInterval(() => { fetchAll(); resetCountdown(); }, pollInterval * 1000);
+}
+
+function goBack() {
+  clearInterval(pollTimer);
+  clearInterval(countdownTimer);
+  document.getElementById('mainPanel').style.display = 'none';
+  document.getElementById('setupScreen').style.display = 'flex';
+  document.getElementById('term').innerHTML = '';
+  lastLogContent = '';
+}
+
+// ── COUNTDOWN ──
+function startCountdown() {
+  countdown = pollInterval;
+  countdownTimer = setInterval(() => {
+    countdown--;
+    document.getElementById('countdown').textContent = `↻ ${countdown}s`;
+    if (countdown <= 0) countdown = pollInterval;
+  }, 1000);
+}
+function resetCountdown() { countdown = pollInterval; }
+
+// ── TERMINAL ──
+const term = () => document.getElementById('term');
+
+function appLog(type, text) {
+  const lines = text.split('\n');
+  lines.forEach(line => {
+    if (!line.trim()) return;
+    const d = document.createElement('div');
+    if (type === 'system') { d.className = 'lm'; d.textContent = '» ' + line; }
+    else if (type === 'cmd')    { d.className = 'lc'; d.textContent = '> ' + line; }
+    else if (type === 'sent')   { d.className = 'la'; d.textContent = '✦ CMD queued: ' + line; }
+    else {
+      if (/ERRO|PANIC|crash|fallo|Brownout|fallid/.test(line)) d.className = 'le';
+      else if (/OK|valid|Complet|NTP|guardad/.test(line))      d.className = 'lo';
+      else if (/OTA|%/.test(line))                             d.className = 'la';
+      else if (/CMD\s*<|>\s/.test(line))                       d.className = 'lc';
+      else d.className = 'li';
+      d.textContent = line;
+    }
+    term().appendChild(d);
+  });
+  if (autoScroll) term().scrollTop = term().scrollHeight;
+}
+
+term().addEventListener('scroll', () => {
+  const t = term();
+  autoScroll = (t.scrollHeight - t.scrollTop - t.clientHeight) < 80;
+});
+
+// ── STATUS DOT ──
+function setDot(state) {
+  const d = document.getElementById('statusDot');
+  d.className = state; // 'polling' | 'error' | ''
+}
+
+// ── GITHUB API HELPERS ──
+async function ghGet(path) {
+  const r = await fetch(`${API()}/${path}`, {
+    headers: { Authorization: `token ${GH_TOKEN}`, 'User-Agent': 'ESP32-Admin' }
+  });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+async function ghPut(path, content, sha, message) {
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(content))),
+  };
+  if (sha) body.sha = sha;
+  const r = await fetch(`${API()}/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${GH_TOKEN}`,
+      'Content-Type': 'application/json',
+      'User-Agent': 'ESP32-Admin'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(`PUT HTTP ${r.status}`);
+  return r.json();
+}
+
+function b64decode(str) {
+  try { return decodeURIComponent(escape(atob(str.replace(/\s/g,'')))); }
+  catch { return atob(str.replace(/\s/g,'')); }
+}
+
+// ── FETCH LOGS ──
+async function fetchLogs() {
+  setDot('polling');
+  try {
+    const data = await ghGet('log_pending.txt');
+    const content = b64decode(data.content).trim();
+    pendingSha = data.sha;
+    if (content && content !== lastLogContent && content !== ' ') {
+      // show only new lines
+      const newPart = content.startsWith(lastLogContent)
+        ? content.slice(lastLogContent.length)
+        : content;
+      if (newPart.trim()) appLog('log', newPart);
+      lastLogContent = content;
+    }
+    setDot('polling');
+    updateInfoPills();
+  } catch(e) {
+    setDot('error');
+    appLog('system', '⚠ Error fetching logs: ' + e.message);
+  }
+}
+
+// ── FETCH STATUS ──
+async function fetchStatus() {
+  try {
+    const data = await ghGet('version.txt');
+    const v = b64decode(data.content).trim();
+    document.getElementById('infoPills').innerHTML =
+      `<span class="pill ok">v${v}</span>` +
+      `<span class="pill">${GH_USER}/${GH_REPO}</span>` +
+      `<span class="pill ok">GitHub API ✓</span>`;
+  } catch {}
+}
+
+// ── FETCH ALL ──
+async function fetchAll() {
+  await fetchLogs();
+  await fetchStatus();
+}
+
+// ── SEND COMMAND ──
+async function sendCmd(force) {
+  const inp = document.getElementById('cmdInput');
+  const cmd = (force || inp.value).trim();
+  if (!cmd) return;
+  if (!force) inp.value = '';
+  appLog('sent', cmd);
+
+  try {
+    // get current cmd file sha
+    let sha = '';
+    let existing = ' ';
+    try {
+      const data = await ghGet('esp32_cmd.txt');
+      sha = data.sha;
+      existing = b64decode(data.content).trim();
+      if (existing === ' ' || existing === '') existing = '';
+    } catch {}
+
+    // append command (multiple commands separated by newline)
+    const newContent = existing ? existing + '\n' + cmd : cmd;
+    await ghPut('esp32_cmd.txt', newContent, sha, 'remote cmd');
+    appLog('system', `Command written to GitHub. ESP32 will execute in ≤30s`);
+  } catch(e) {
+    appLog('system', '⚠ Failed to send command: ' + e.message);
+    setDot('error');
+  }
+}
+
+// ── INFO PILLS ──
+function updateInfoPills() {
+  // already updated in fetchStatus, just ensure polling indicator
+  const dot = document.getElementById('statusDot');
+  if (!dot.className) dot.className = 'polling';
+}
+</script>
+</body>
+</html>
