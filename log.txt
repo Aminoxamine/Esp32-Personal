@@ -89,3 +89,6 @@
 [22:40:14] [OTA] Local v22 → Remoto v22
 [22:42:14] [OTA] Local v22 → Remoto v22
 [22:44:14] [OTA] Local v22 → Remoto v22
+[22:46:14] [OTA] Local v22 → Remoto v23
+[22:46:28] [OTA] v23 OK. Reiniciando...
+[22:46:28] OTA completada v23. Reiniciando...
