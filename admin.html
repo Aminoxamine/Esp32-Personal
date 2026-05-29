@@ -7,19 +7,19 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:       #080b10;
-      --surface:  #0e1318;
-      --border:   #1c2330;
-      --border2:  #2a3545;
-      --text:     #cdd9e5;
-      --muted:    #536878;
-      --accent:   #4d9eff;
-      --green:    #3fb950;
-      --red:      #f85149;
-      --yellow:   #e3b341;
-      --cyan:     #79c0ff;
-      --mono:     'JetBrains Mono', monospace;
-      --sans:     'Syne', sans-serif;
+      --bg:      #080b10;
+      --surface: #0e1318;
+      --border:  #1c2330;
+      --border2: #2a3545;
+      --text:    #cdd9e5;
+      --muted:   #536878;
+      --accent:  #4d9eff;
+      --green:   #3fb950;
+      --red:     #f85149;
+      --yellow:  #e3b341;
+      --cyan:    #79c0ff;
+      --mono:    'JetBrains Mono', monospace;
+      --sans:    'Syne', sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -32,7 +32,7 @@
       overflow: hidden;
     }
 
-    /* ── SETUP SCREEN ── */
+    /* ══ SETUP SCREEN ══ */
     #setupScreen {
       flex: 1;
       display: flex;
@@ -47,7 +47,7 @@
       border: 1px solid var(--border2);
       border-radius: 16px;
       padding: 2.2rem 2rem;
-      width: 380px;
+      width: 390px;
       max-width: 95vw;
     }
     .setup-card h1 {
@@ -106,7 +106,7 @@
       letter-spacing: .03em;
       transition: opacity .2s, transform .1s;
     }
-    .btn-connect:hover { opacity: .9; }
+    .btn-connect:hover  { opacity: .9; }
     .btn-connect:active { transform: scale(.98); }
     .setup-err {
       color: var(--red);
@@ -115,7 +115,7 @@
       min-height: 16px;
     }
 
-    /* ── MAIN PANEL ── */
+    /* ══ MAIN PANEL ══ */
     #mainPanel {
       display: none;
       flex-direction: column;
@@ -124,7 +124,7 @@
       gap: .5rem;
     }
 
-    /* header */
+    /* topbar */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -137,11 +137,8 @@
       gap: .5rem;
       flex-wrap: wrap;
     }
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-    }
+    .topbar-left  { display: flex; align-items: center; gap: .75rem; }
+    .topbar-right { display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
     .logo {
       font-family: var(--sans);
       font-size: 13px;
@@ -159,11 +156,7 @@
       letter-spacing: .07em;
       text-transform: uppercase;
     }
-    .info-pills {
-      display: flex;
-      gap: .6rem;
-      flex-wrap: wrap;
-    }
+    .info-pills { display: flex; gap: .5rem; flex-wrap: wrap; }
     .pill {
       font-size: 10px;
       color: var(--muted);
@@ -173,10 +166,9 @@
       border-radius: 4px;
       white-space: nowrap;
     }
-    .pill.ok { color: var(--green); border-color: rgba(63,185,80,.3); background: rgba(63,185,80,.06); }
+    .pill.ok   { color: var(--green);  border-color: rgba(63,185,80,.3);  background: rgba(63,185,80,.06); }
     .pill.warn { color: var(--yellow); border-color: rgba(227,179,65,.3); background: rgba(227,179,65,.06); }
-    .pill.err { color: var(--red); border-color: rgba(248,81,73,.3); background: rgba(248,81,73,.06); }
-    .topbar-right { display: flex; gap: .4rem; align-items: center; }
+    .pill.err  { color: var(--red);    border-color: rgba(248,81,73,.3);  background: rgba(248,81,73,.06); }
 
     /* status dot */
     #statusDot {
@@ -203,64 +195,13 @@
       transition: background .15s, border-color .15s;
       white-space: nowrap;
     }
-    .btn:hover { background: var(--border); }
-    .btn.danger { color: var(--red); }
+    .btn:hover        { background: var(--border); }
+    .btn.primary      { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+    .btn.primary:hover{ opacity: .88; background: var(--accent); }
+    .btn.danger       { color: var(--red); }
     .btn.danger:hover { background: rgba(248,81,73,.1); border-color: rgba(248,81,73,.4); }
-    .btn.warn-btn { color: var(--yellow); }
+    .btn.warn-btn       { color: var(--yellow); }
     .btn.warn-btn:hover { background: rgba(227,179,65,.1); border-color: rgba(227,179,65,.4); }
-
-    /* terminal */
-    #term {
-      flex: 1;
-      overflow-y: auto;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: .8rem 1rem;
-      font-size: 11.5px;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      word-break: break-all;
-      scroll-behavior: smooth;
-    }
-    #term::-webkit-scrollbar { width: 4px; }
-    #term::-webkit-scrollbar-track { background: transparent; }
-    #term::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-    .li { color: var(--muted); }
-    .le { color: var(--red); }
-    .lo { color: var(--green); }
-    .la { color: var(--cyan); }
-    .lc { color: var(--yellow); }
-    .lm { color: var(--accent); font-style: italic; }
-
-    /* command bar */
-    .cmdbar {
-      display: flex;
-      gap: .4rem;
-      flex-shrink: 0;
-    }
-    #cmdInput {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      color: var(--text);
-      padding: .55rem 1rem;
-      border-radius: 8px;
-      font-family: var(--mono);
-      font-size: 12px;
-      outline: none;
-      transition: border-color .2s;
-    }
-    #cmdInput:focus { border-color: var(--accent); }
-    #cmdInput::placeholder { color: var(--muted); }
-    .btn.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      font-weight: 500;
-    }
-    .btn.primary:hover { opacity: .88; background: var(--accent); }
 
     /* delay notice */
     .delay-bar {
@@ -277,12 +218,49 @@
     }
     .delay-bar span { color: var(--muted); }
 
-    /* countdown */
-    #countdown {
-      font-size: 10px;
-      color: var(--muted);
-      white-space: nowrap;
+    /* terminal */
+    #term {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .8rem 1rem;
+      font-size: 11.5px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-all;
+      scroll-behavior: smooth;
     }
+    #term::-webkit-scrollbar       { width: 4px; }
+    #term::-webkit-scrollbar-track { background: transparent; }
+    #term::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .li { color: var(--muted); }
+    .le { color: var(--red); }
+    .lo { color: var(--green); }
+    .la { color: var(--cyan); }
+    .lc { color: var(--yellow); }
+    .lm { color: var(--accent); font-style: italic; }
+
+    /* command bar */
+    .cmdbar { display: flex; gap: .4rem; flex-shrink: 0; }
+    #cmdInput {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: .55rem 1rem;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    #cmdInput:focus       { border-color: var(--accent); }
+    #cmdInput::placeholder{ color: var(--muted); }
+
+    /* countdown */
+    #countdown { font-size: 10px; color: var(--muted); white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -295,16 +273,16 @@
 
     <div class="field">
       <label>GitHub Token</label>
-      <input id="inToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
-      <p class="hint">Your Personal Access Token with <code>repo</code> scope</p>
+      <input id="inToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+      <p class="hint">Personal Access Token with <code>repo</code> scope</p>
     </div>
     <div class="field">
       <label>GitHub Username</label>
-      <input id="inUser" type="text" placeholder="Aminoxamine" value="Aminoxamine" />
+      <input id="inUser" type="text" value="Aminoxamine" />
     </div>
     <div class="field">
       <label>Repository Name</label>
-      <input id="inRepo" type="text" placeholder="Esp32-Personal" value="Esp32-Personal" />
+      <input id="inRepo" type="text" value="Esp32-Personal" />
     </div>
 
     <button class="btn-connect" onclick="startPanel()">Connect via GitHub</button>
@@ -325,14 +303,15 @@
     <div class="topbar-right">
       <div id="statusDot"></div>
       <span id="countdown"></span>
-      <button class="btn warn-btn" onclick="sendCmd('RESTART')">↺ Reiniciar</button>
-      <button class="btn danger" onclick="goBack()">✕ Salir</button>
+      <button class="btn warn-btn" onclick="confirmRestart()">↺ Reiniciar</button>
+      <button class="btn danger"   onclick="clearCmd()"      title="Cancel pending command">🗑 Clear CMD</button>
+      <button class="btn danger"   onclick="goBack()">✕ Salir</button>
     </div>
   </div>
 
   <div class="delay-bar">
     ⏱ Modo GitHub API
-    <span>· Los logs y comandos tienen ~30 segundos de delay (intervalo de polling del ESP32)</span>
+    <span>· Logs y comandos tienen ~30s de delay · el ESP32 comprueba GitHub cada 30s</span>
   </div>
 
   <div id="term"></div>
@@ -342,75 +321,95 @@
       placeholder="STATUS · RESTART · SET_TOKEN ghp_... · SET_ADMIN_USER x · SET_ADMIN_PASS x"
       onkeydown="if(event.key==='Enter') sendCmd()" />
     <button class="btn primary" onclick="sendCmd()">▶ Send</button>
-    <button class="btn" onclick="document.getElementById('term').innerHTML=''">✕ Clear</button>
+    <button class="btn"         onclick="document.getElementById('term').innerHTML=''">✕ Clear</button>
   </div>
 </div>
 
 <script>
-// ── CONFIG ──
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
 let GH_TOKEN = '', GH_USER = '', GH_REPO = '';
-let pollTimer = null, countdownTimer = null, pollInterval = 30;
-let countdown = pollInterval;
+let pollTimer = null, countdownTimer = null;
+
+const POLL_INTERVAL = 30;              // seconds
+const CMD_EXPIRY_MS = 5 * 60 * 1000;  // 5 minutes — stale command threshold
+const LOG_SIZE_WARN = 400000;          // ~400 KB — warn if GitHub Action isn't clearing logs
+
+let countdown  = POLL_INTERVAL;
 let autoScroll = true;
-let lastLogContent = '';
-let pendingSha = '';
+let lastLogSha = '';   // detect changes by SHA (not content)
+let lastLogLen = 0;    // detect resets when content shrinks
 
 const API = () => `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents`;
 
-// ── SETUP ──
+// ══════════════════════════════════════════════════════
+//  SETUP / TEARDOWN
+// ══════════════════════════════════════════════════════
 function startPanel() {
   GH_TOKEN = document.getElementById('inToken').value.trim();
   GH_USER  = document.getElementById('inUser').value.trim();
   GH_REPO  = document.getElementById('inRepo').value.trim();
+
   if (!GH_TOKEN || !GH_USER || !GH_REPO) {
     document.getElementById('setupErr').textContent = '⚠ Fill in all fields.';
     return;
   }
+
+  // Clear token from input immediately so it's not visible in the DOM
+  document.getElementById('inToken').value = '';
+  document.getElementById('setupErr').textContent = '';
   document.getElementById('setupScreen').style.display = 'none';
-  document.getElementById('mainPanel').style.display = 'flex';
-  appLog('system', `Connected via GitHub API · ${GH_USER}/${GH_REPO}`);
-  appLog('system', 'Fetching initial logs...');
+  document.getElementById('mainPanel').style.display   = 'flex';
+
+  appLog('system', `Connected · ${GH_USER}/${GH_REPO}`);
+  appLog('system', 'Fetching logs...');
   fetchAll();
   startCountdown();
-  pollTimer = setInterval(() => { fetchAll(); resetCountdown(); }, pollInterval * 1000);
+  pollTimer = setInterval(() => { fetchAll(); resetCountdown(); }, POLL_INTERVAL * 1000);
 }
 
 function goBack() {
   clearInterval(pollTimer);
   clearInterval(countdownTimer);
-  document.getElementById('mainPanel').style.display = 'none';
+  GH_TOKEN = '';  // wipe token from memory
+  document.getElementById('mainPanel').style.display   = 'none';
   document.getElementById('setupScreen').style.display = 'flex';
   document.getElementById('term').innerHTML = '';
-  lastLogContent = '';
+  lastLogSha = ''; lastLogLen = 0;
 }
 
-// ── COUNTDOWN ──
+// ══════════════════════════════════════════════════════
+//  COUNTDOWN
+// ══════════════════════════════════════════════════════
 function startCountdown() {
-  countdown = pollInterval;
+  countdown = POLL_INTERVAL;
   countdownTimer = setInterval(() => {
     countdown--;
     document.getElementById('countdown').textContent = `↻ ${countdown}s`;
-    if (countdown <= 0) countdown = pollInterval;
+    if (countdown <= 0) countdown = POLL_INTERVAL;
   }, 1000);
 }
-function resetCountdown() { countdown = pollInterval; }
+function resetCountdown() { countdown = POLL_INTERVAL; }
 
-// ── TERMINAL ──
+// ══════════════════════════════════════════════════════
+//  TERMINAL
+// ══════════════════════════════════════════════════════
 const term = () => document.getElementById('term');
 
 function appLog(type, text) {
-  const lines = text.split('\n');
-  lines.forEach(line => {
+  text.split('\n').forEach(line => {
     if (!line.trim()) return;
     const d = document.createElement('div');
-    if (type === 'system') { d.className = 'lm'; d.textContent = '» ' + line; }
-    else if (type === 'cmd')    { d.className = 'lc'; d.textContent = '> ' + line; }
-    else if (type === 'sent')   { d.className = 'la'; d.textContent = '✦ CMD queued: ' + line; }
-    else {
-      if (/ERRO|PANIC|crash|fallo|Brownout|fallid/.test(line)) d.className = 'le';
-      else if (/OK|valid|Complet|NTP|guardad/.test(line))      d.className = 'lo';
-      else if (/OTA|%/.test(line))                             d.className = 'la';
-      else if (/CMD\s*<|>\s/.test(line))                       d.className = 'lc';
+    if (type === 'system') {
+      d.className = 'lm'; d.textContent = '» ' + line;
+    } else if (type === 'sent') {
+      d.className = 'la'; d.textContent = '✦ CMD → ' + line;
+    } else {
+      if      (/ERRO|PANIC|crash|fallo|Brownout|fallid/.test(line)) d.className = 'le';
+      else if (/OK|valid|Complet|NTP|guardad/.test(line))           d.className = 'lo';
+      else if (/OTA|%/.test(line))                                  d.className = 'la';
+      else if (/CMD\s*<|>\s/.test(line))                            d.className = 'lc';
       else d.className = 'li';
       d.textContent = line;
     }
@@ -424,13 +423,14 @@ term().addEventListener('scroll', () => {
   autoScroll = (t.scrollHeight - t.scrollTop - t.clientHeight) < 80;
 });
 
-// ── STATUS DOT ──
-function setDot(state) {
-  const d = document.getElementById('statusDot');
-  d.className = state; // 'polling' | 'error' | ''
-}
+// ══════════════════════════════════════════════════════
+//  STATUS DOT
+// ══════════════════════════════════════════════════════
+function setDot(state) { document.getElementById('statusDot').className = state; }
 
-// ── GITHUB API HELPERS ──
+// ══════════════════════════════════════════════════════
+//  GITHUB API HELPERS
+// ══════════════════════════════════════════════════════
 async function ghGet(path) {
   const r = await fetch(`${API()}/${path}`, {
     headers: { Authorization: `token ${GH_TOKEN}`, 'User-Agent': 'ESP32-Admin' }
@@ -440,17 +440,14 @@ async function ghGet(path) {
 }
 
 async function ghPut(path, content, sha, message) {
-  const body = {
-    message,
-    content: btoa(unescape(encodeURIComponent(content))),
-  };
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))) };
   if (sha) body.sha = sha;
   const r = await fetch(`${API()}/${path}`, {
     method: 'PUT',
     headers: {
-      Authorization: `token ${GH_TOKEN}`,
+      Authorization:  `token ${GH_TOKEN}`,
       'Content-Type': 'application/json',
-      'User-Agent': 'ESP32-Admin'
+      'User-Agent':   'ESP32-Admin'
     },
     body: JSON.stringify(body)
   });
@@ -459,38 +456,65 @@ async function ghPut(path, content, sha, message) {
 }
 
 function b64decode(str) {
-  try { return decodeURIComponent(escape(atob(str.replace(/\s/g,'')))); }
-  catch { return atob(str.replace(/\s/g,'')); }
+  try { return decodeURIComponent(escape(atob(str.replace(/\s/g, '')))); }
+  catch { return atob(str.replace(/\s/g, '')); }
 }
 
-// ── FETCH LOGS ──
+// ══════════════════════════════════════════════════════
+//  FETCH LOGS  (SHA-based, reset-aware)
+// ══════════════════════════════════════════════════════
 async function fetchLogs() {
   setDot('polling');
   try {
-    const data = await ghGet('log_pending.txt');
+    const data    = await ghGet('log_pending.txt');
+    const sha     = data.sha;
     const content = b64decode(data.content).trim();
-    pendingSha = data.sha;
-    if (content && content !== lastLogContent && content !== ' ') {
-      // show only new lines
-      const newPart = content.startsWith(lastLogContent)
-        ? content.slice(lastLogContent.length)
+
+    // Warn if file is huge — GitHub Action may not be running
+    if (content.length > LOG_SIZE_WARN) {
+      appLog('system', `⚠ log_pending.txt is ${Math.round(content.length/1024)}KB — GitHub Action may have stopped!`);
+    }
+
+    // Nothing changed since last poll
+    if (sha === lastLogSha) { setDot('polling'); return; }
+    lastLogSha = sha;
+
+    // File was cleared (by GitHub Action or manually)
+    if (content.length === 0 || content === ' ') {
+      if (lastLogLen > 0) {
+        appLog('system', '── log_pending.txt cleared ──');
+        lastLogLen = 0;
+      }
+      setDot('polling'); return;
+    }
+
+    // Content is shorter than before → file was reset, show everything fresh
+    if (content.length < lastLogLen) {
+      appLog('system', '── log reset detected ──');
+      appLog('log', content);
+    } else {
+      // Show only the new part added since last poll
+      const newPart = content.length > lastLogLen
+        ? content.slice(lastLogLen)
         : content;
       if (newPart.trim()) appLog('log', newPart);
-      lastLogContent = content;
     }
+
+    lastLogLen = content.length;
     setDot('polling');
-    updateInfoPills();
   } catch(e) {
     setDot('error');
-    appLog('system', '⚠ Error fetching logs: ' + e.message);
+    appLog('system', '⚠ Log fetch error: ' + e.message);
   }
 }
 
-// ── FETCH STATUS ──
+// ══════════════════════════════════════════════════════
+//  FETCH STATUS (version pill)
+// ══════════════════════════════════════════════════════
 async function fetchStatus() {
   try {
     const data = await ghGet('version.txt');
-    const v = b64decode(data.content).trim();
+    const v    = b64decode(data.content).trim();
     document.getElementById('infoPills').innerHTML =
       `<span class="pill ok">v${v}</span>` +
       `<span class="pill">${GH_USER}/${GH_REPO}</span>` +
@@ -498,13 +522,14 @@ async function fetchStatus() {
   } catch {}
 }
 
-// ── FETCH ALL ──
 async function fetchAll() {
   await fetchLogs();
   await fetchStatus();
 }
 
-// ── SEND COMMAND ──
+// ══════════════════════════════════════════════════════
+//  SEND COMMAND  (with TS: timestamp prefix)
+// ══════════════════════════════════════════════════════
 async function sendCmd(force) {
   const inp = document.getElementById('cmdInput');
   const cmd = (force || inp.value).trim();
@@ -513,29 +538,52 @@ async function sendCmd(force) {
   appLog('sent', cmd);
 
   try {
-    // Always get the latest SHA first (required by GitHub API to update a file)
-    // but NEVER read the content — always overwrite with just the new command.
-    // This prevents the loop caused by re-appending stale content.
+    // Get current SHA (required by GitHub API to update a file)
     let sha = '';
     try {
-      const data = await ghGet('esp32_cmd.txt');
-      sha = data.sha;
+      const data    = await ghGet('esp32_cmd.txt');
+      sha           = data.sha;
+      const existing = b64decode(data.content).trim();
+
+      // Warn if a command is still pending (not yet executed by ESP32)
+      if (existing && existing !== ' ') {
+        const tsMatch = existing.match(/^TS:(\d+):/);
+        if (tsMatch) {
+          const age = Date.now() - parseInt(tsMatch[1]);
+          if (age < CMD_EXPIRY_MS) {
+            appLog('system', `⚠ Previous command still pending (${Math.round(age/1000)}s old). Overwriting.`);
+          }
+        }
+      }
     } catch {}
 
-    // Overwrite the file with only the new command
-    await ghPut('esp32_cmd.txt', cmd, sha, 'remote cmd');
-    appLog('system', `Command sent. ESP32 will execute in ≤30s`);
+    // Write "TS:<timestamp_ms>:<command>" — ESP32 strips the prefix before executing
+    const payload = `TS:${Date.now()}:${cmd}`;
+    await ghPut('esp32_cmd.txt', payload, sha, 'remote cmd');
+    appLog('system', 'Command sent. ESP32 will execute in ≤30s.');
   } catch(e) {
-    appLog('system', '⚠ Failed to send command: ' + e.message);
+    appLog('system', '⚠ Failed to send: ' + e.message);
     setDot('error');
   }
 }
 
-// ── INFO PILLS ──
-function updateInfoPills() {
-  // already updated in fetchStatus, just ensure polling indicator
-  const dot = document.getElementById('statusDot');
-  if (!dot.className) dot.className = 'polling';
+// Confirm before restarting
+function confirmRestart() {
+  if (confirm('Restart the ESP32?')) sendCmd('RESTART');
+}
+
+// ══════════════════════════════════════════════════════
+//  CLEAR PENDING COMMAND
+// ══════════════════════════════════════════════════════
+async function clearCmd() {
+  try {
+    let sha = '';
+    try { const d = await ghGet('esp32_cmd.txt'); sha = d.sha; } catch {}
+    await ghPut('esp32_cmd.txt', ' ', sha, 'clear cmd');
+    appLog('system', '✓ Pending command cleared.');
+  } catch(e) {
+    appLog('system', '⚠ Could not clear: ' + e.message);
+  }
 }
 </script>
 </body>
