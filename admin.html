@@ -513,20 +513,18 @@ async function sendCmd(force) {
   appLog('sent', cmd);
 
   try {
-    // get current cmd file sha
+    // Always get the latest SHA first (required by GitHub API to update a file)
+    // but NEVER read the content — always overwrite with just the new command.
+    // This prevents the loop caused by re-appending stale content.
     let sha = '';
-    let existing = ' ';
     try {
       const data = await ghGet('esp32_cmd.txt');
       sha = data.sha;
-      existing = b64decode(data.content).trim();
-      if (existing === ' ' || existing === '') existing = '';
     } catch {}
 
-    // append command (multiple commands separated by newline)
-    const newContent = existing ? existing + '\n' + cmd : cmd;
-    await ghPut('esp32_cmd.txt', newContent, sha, 'remote cmd');
-    appLog('system', `Command written to GitHub. ESP32 will execute in ≤30s`);
+    // Overwrite the file with only the new command
+    await ghPut('esp32_cmd.txt', cmd, sha, 'remote cmd');
+    appLog('system', `Command sent. ESP32 will execute in ≤30s`);
   } catch(e) {
     appLog('system', '⚠ Failed to send command: ' + e.message);
     setDot('error');
