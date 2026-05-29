@@ -1,5 +1,1 @@
---------------------2026-05-29--------------------
-[22:47:04] [REMOTE] Comandos recibidos.
-[22:47:04] [CMD] Desconocido: OTA
-[22:47:06] [REMOTE] Fichero de comandos limpiado.
-[22:48:34] [OTA] Local v23 → Remoto v23
+

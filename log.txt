@@ -96,3 +96,8 @@
 [14:33:30] [INFO] RAM:270304b  Boot#313  v23
 [16:33:34] [WEB] http://192.168.18.192
 [16:33:34] [OTA] Local v23 → Remoto v23
+--------------------2026-05-29--------------------
+[22:47:04] [REMOTE] Comandos recibidos.
+[22:47:04] [CMD] Desconocido: OTA
+[22:47:06] [REMOTE] Fichero de comandos limpiado.
+[22:48:34] [OTA] Local v23 → Remoto v23
