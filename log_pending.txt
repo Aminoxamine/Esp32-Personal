@@ -1,1 +1,11 @@
-
+[22:51:09] [REMOTE] Comandos recibidos.
+[22:51:09] [STATUS] v23  boot#313
+[22:51:09] [STATUS] Uptime: 00h04m35s
+[22:51:09] [STATUS] IP: 192.168.18.192  RSSI: -67 dBm
+[22:51:09] [STATUS] RAM: 163020 bytes libres
+[22:51:09] [STATUS] SPIFFS: 1157110 bytes libres
+[22:51:09] [STATUS] Reloj: NTP OK
+[22:51:09] [STATUS] Fecha: 2026-05-29 22:51:09
+[22:51:09] [STATUS] Token GH: OK (ghp_eaFo...)
+[22:51:11] [REMOTE] Fichero de comandos limpiado.
+[22:52:34] [OTA] Local v23 → Remoto v23
